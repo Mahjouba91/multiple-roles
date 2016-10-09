@@ -51,7 +51,7 @@ class MDMR_Checklist_Controller {
 		$roles      = $this->model->get_roles();
 		$user_roles = $user->roles;
 
-		include( MDMR_PATH . 'views/checklist.html.php' );
+		include( apply_filters( 'mdmr_checklist_template', MDMR_PATH . 'views/checklist.html.php' ) );
 
 	}
 

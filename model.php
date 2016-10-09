@@ -13,7 +13,7 @@ class MDMR_Model {
 	public function get_roles() {
 		global $wp_roles;
 
-		return $wp_roles->role_names;
+		return apply_filters( 'mdmr_get_roles', $wp_roles->role_names );
 	}
 
 	/**
@@ -40,7 +40,7 @@ class MDMR_Model {
 			$roles[ $role ] = $wp_roles->role_names[ $role ];
 		}
 
-		return $roles;
+		return apply_filters( 'mdmr_get_user_roles', $roles );
 
 	}
 
