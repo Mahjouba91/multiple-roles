@@ -54,7 +54,7 @@ class MDMR_Column_Controller {
 		$roles = $this->model->get_user_roles( $user_id );
 
 		ob_start();
-		include( MDMR_PATH . 'views/column.html.php' );
+		include( apply_filters( 'mdmr_column_template', MDMR_PATH . 'views/column.html.php' ) );
 
 		return ob_get_clean();
 
