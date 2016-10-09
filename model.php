@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Role logic: retrieving, updating, and checking permission.
  */
@@ -11,6 +12,7 @@ class MDMR_Model {
 	 */
 	public function get_roles() {
 		global $wp_roles;
+
 		return $wp_roles->role_names;
 	}
 
@@ -18,21 +20,24 @@ class MDMR_Model {
 	 * Grab a particular user's roles.
 	 *
 	 * @param object|int $user The user object or ID.
+	 *
 	 * @return array Roles in name => label pairs.
 	 */
 	public function get_user_roles( $user = 0 ) {
 
-		if ( $user && is_int( $user ) )
+		if ( $user && is_int( $user ) ) {
 			$user = get_user_by( 'id', $user );
+		}
 
-		if ( !$user )
+		if ( ! $user ) {
 			return array();
+		}
 
 		global $wp_roles;
 		$roles = array();
 
-		foreach( $user->roles as $role ) {
-			$roles[$role] = $wp_roles->role_names[$role];
+		foreach ( $user->roles as $role ) {
+			$roles[ $role ] = $wp_roles->role_names[ $role ];
 		}
 
 		return $roles;
@@ -43,17 +48,17 @@ class MDMR_Model {
 	 * Erase the user's existing roles and replace them with the new array.
 	 *
 	 * @param integer $user_id The WordPress user ID.
-	 * @param array $roles The new array of roles for the user.
+	 * @param array   $roles   The new array of roles for the user.
 	 */
 	public function update_roles( $user_id = 0, $roles = array() ) {
 
 		$roles = array_map( 'sanitize_key', (array) $roles );
-		$user = get_user_by( 'id', $user_id );
+		$user  = get_user_by( 'id', $user_id );
 
 		// remove all roles
 		$user->set_role( '' );
 
-		foreach( $roles as $role ) {
+		foreach ( $roles as $role ) {
 			$user->add_role( $role );
 		}
 
@@ -69,9 +74,11 @@ class MDMR_Model {
 	public function can_update_roles() {
 
 		if ( is_network_admin()
-	      || !current_user_can( 'edit_users' )
-		  || ( defined( 'IS_PROFILE_PAGE' ) && IS_PROFILE_PAGE && !current_user_can( 'manage_sites' ) ) )
+		     || ! current_user_can( 'edit_users' )
+		     || ( defined( 'IS_PROFILE_PAGE' ) && IS_PROFILE_PAGE && ! current_user_can( 'manage_sites' ) )
+		) {
 			return false;
+		}
 
 		return true;
 

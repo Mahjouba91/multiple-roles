@@ -1,4 +1,5 @@
 <?php
+
 /**
  * A set of action functions which handle the behavior of the roles checklist
  * on user edit screens.
@@ -27,9 +28,10 @@ class MDMR_Checklist_Controller {
 	 * @param string $hook The current admin screen.
 	 */
 	public function remove_dropdown( $hook ) {
-		if ( $hook != 'user-edit.php' )
+		if ( 'user-edit.php' !== $hook ) {
 			return;
-		wp_enqueue_script( 'md-multiple-roles', MDMR_URL . 'views/js/scripts.js', array( 'jquery' ) );
+		}
+		wp_enqueue_script( 'md-multiple-roles', MDMR_URL . 'views/js/scripts.js', array( 'jquery' ), '1.0' );
 	}
 
 	/**
@@ -40,13 +42,14 @@ class MDMR_Checklist_Controller {
 	 */
 	public function output_checklist( $user ) {
 
-		if ( !$this->model->can_update_roles() )
+		if ( ! $this->model->can_update_roles() ) {
 			return;
+		}
 
 		wp_nonce_field( 'update-md-multiple-roles', 'md_multiple_roles_nonce' );
 
-		$roles        = $this->model->get_roles();
-		$user_roles   = $user->roles;
+		$roles      = $this->model->get_roles();
+		$user_roles = $user->roles;
 
 		include( MDMR_PATH . 'views/checklist.html.php' );
 
@@ -60,11 +63,13 @@ class MDMR_Checklist_Controller {
 	 */
 	public function process_checklist( $user_id ) {
 
-		if ( isset( $_POST['md_multiple_roles_nonce'] ) && !wp_verify_nonce( $_POST['md_multiple_roles_nonce'], 'update-md-multiple-roles' ) )
+		if ( isset( $_POST['md_multiple_roles_nonce'] ) && ! wp_verify_nonce( $_POST['md_multiple_roles_nonce'], 'update-md-multiple-roles' ) ) {
 			return;
+		}
 
-		if ( !$this->model->can_update_roles() )
+		if ( ! $this->model->can_update_roles() ) {
 			return;
+		}
 
 		$new_roles = isset( $_POST['md_multiple_roles'] ) ? $_POST['md_multiple_roles'] : array();
 
