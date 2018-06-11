@@ -61,7 +61,14 @@ class MDMR_Checklist_Controller {
 	 * @param int $user_id The user ID whose roles might get updated.
 	 */
 	public function process_checklist( $user_id ) {
-		if ( isset( $_POST['md_multiple_roles_nonce'] ) && ! wp_verify_nonce( $_POST['md_multiple_roles_nonce'], 'update-md-multiple-roles' ) ) {
+
+		// The checklist is not always rendered when this method is triggered on 'profile_update' (i.e. when updating a profile programatically),
+		// First check that the 'md_multiple_roles_nonce' is available, else bail. If we continue to process and update_roles(), all user roles will be lost.
+		// We check for 'md_multiple_roles_nonce' rather than 'md_multiple_roles' as this input/variable will be empty if all role inputs are left unchecked.
+		if ( !isset($_POST['md_multiple_roles_nonce']) )
+			return;
+
+		if ( ! wp_verify_nonce( $_POST['md_multiple_roles_nonce'], 'update-md-multiple-roles' ) ) {
 			return;
 		}
 
@@ -69,7 +76,7 @@ class MDMR_Checklist_Controller {
 			return;
 		}
 
-		$new_roles = ( isset( $_POST['md_multiple_roles'] ) && is_array( $_POST['md_multiple_roles'] ) ) ? $_POST['md_multiple_roles'] : array();
+		$new_roles = ( isset($_POST['md_multiple_roles']) && is_array($_POST['md_multiple_roles']) ) ? $_POST['md_multiple_roles'] : array();
 
 		$this->model->update_roles( $user_id, $new_roles );
 	}
